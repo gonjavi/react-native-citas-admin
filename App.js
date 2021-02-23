@@ -1,9 +1,11 @@
 import React, { useState} from 'react';
-import { Text, StyleSheet, View, FlatList } from 'react-native';
+import { Text, StyleSheet, View, FlatList, TouchableHighlight, Platform } from 'react-native';
 import Cita from './componentes/Cita';
 import Formulario from './componentes/Formulario';
 
 const App = () => {
+  const [mostrarform, guardarMostrarForm] = useState(false);
+
   const [citas, setCitas] = useState([
     { id: '1', paciente: 'Hook', propietario: 'Juan', sintomas: 'No Come'},
     { id: '2', paciente: 'Redux', propietario: 'Itzel', sintomas: 'No Duerme'},
@@ -16,20 +18,40 @@ const App = () => {
     })
   }
 
+  const mostrarFormulario = () => {
+    guardarMostrarForm(!mostrarform);
+  }
+
   return (
     <View style={styles.contenedor}>
       <Text style={styles.title}>Administrador Citas</Text>
 
+      <View>
+        <TouchableHighlight onPress={() => mostrarFormulario()} style={styles.btnMostrarForm}>
+          <Text style={styles.textoMostrarForm}>Mostrar Formulario</Text>
+        </TouchableHighlight>
+      </View>
+
      <View style={styles.contenido}>
-      <Formulario />
+       { mostrarform ? (
+         <>
+         <Text style={styles.title}>Crear Nueva Cita</Text>
+          <Formulario />
+        </>
+       ) : (
+        <>
+          <Text style={styles.title}>{citas.length > 0 ? 'Adminstra tus citas' : 'No hay citas'}</Text>
+          <FlatList
+            style={styles.listado}
+            data={citas}
+            keyExtractor={ cita => cita.id }
+            renderItem={({item}) => <Cita cita={item} eliminarPaciente={eliminarPaciente} />    }
+          /> 
+        </>
+       )}
+      
         
-        <Text style={styles.title}>{citas.length > 0 ? 'Adminstra tus citas' : 'No hay citas'}</Text>
-        <FlatList
-          style={styles.listado}
-          data={citas}
-          keyExtractor={ cita => cita.id }
-          renderItem={({item}) => <Cita cita={item} eliminarPaciente={eliminarPaciente} />    }
-        />    
+           
      </View>
     </View>
   );
@@ -42,7 +64,7 @@ const styles = StyleSheet.create({
   },
   title: {
     color: '#fff',
-    marginTop: 40,
+    marginTop: Platform === 'ios' ? 40 : 20,
     marginBottom: 20,
     textAlign: 'center',
     fontSize: 24,
@@ -54,6 +76,16 @@ const styles = StyleSheet.create({
   },
   listado: {
     flex: 1,
+  },
+  btnMostrarForm: {
+    padding: 10,
+    backgroundColor: '#7d024e',
+    marginVertical: 10,
+  },
+  textoMostrarForm: {
+    color: '#fff',
+    fontWeight: 'bold',
+    textAlign: 'center'
   }
 });
 
