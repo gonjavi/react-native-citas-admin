@@ -1,8 +1,9 @@
 import React, { useState} from 'react';
 import { Text, StyleSheet, View, TextInput, Button, TouchableHighlight, Alert, ScrollView } from 'react-native';
 import DateTimePickerModal from "react-native-modal-datetime-picker";
+import shortid from 'shortid';
 
-const Formulario = () => {
+const Formulario = ({ citas, setCitas, guardarMostrarForm }) => {
   const [paciente, guardarPaciente] = useState('');
   const [propietario, guardarPropietario] = useState('');
   const [telefono, guardartelefono] = useState('');
@@ -53,6 +54,19 @@ const Formulario = () => {
 
         return;
       }
+
+      // crear una nueva cita
+      const cita = { paciente, propietario, telefono, fecha, hora, sintomas };
+
+      cita.id = shortid.generate();
+       
+      // agregar al estado
+      const citasNuevo = [...citas, cita];
+      setCitas(citasNuevo);
+
+      //ocultar form
+      guardarMostrarForm(false);
+
   }
 
   const mostrarAlerta = () => {
