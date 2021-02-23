@@ -4,6 +4,7 @@ import DateTimePickerModal from "react-native-modal-datetime-picker";
 
 const Formulario = () => {
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
 
   const showDatePicker = () => {
     setDatePickerVisibility(true);
@@ -13,7 +14,21 @@ const Formulario = () => {
     setDatePickerVisibility(false);
   };
 
-  const handleConfirm = (date) => {
+  const confirmarFecha = date => {
+    console.warn("A date has been picked: ", date);
+    hideDatePicker();
+  };
+
+  // time picker
+  const showTimePicker = () => {
+    setTimePickerVisibility(true);
+  };
+
+  const hideTimePicker = () => {
+    setTimePickerVisibility(false);
+  };
+
+  const confirmarHora = date => {
     console.warn("A date has been picked: ", date);
     hideDatePicker();
   };
@@ -47,12 +62,30 @@ const Formulario = () => {
       </View>
 
       <View>
-      <Button title="Show Date Picker" onPress={showDatePicker} />
-        <DateTimePickerModal
-          isVisible={isDatePickerVisible}
-          mode="date"
-          onConfirm={handleConfirm}
-          onCancel={hideDatePicker}
+        <Button title="Seleccionar Fecha" onPress={showDatePicker} />
+          <DateTimePickerModal
+            isVisible={isDatePickerVisible}
+            mode="date"
+            onConfirm={confirmarFecha}
+            onCancel={hideDatePicker}
+            locale='es_Es' // para español para ios
+            headerTextIOS="Selecciona la fecha"
+            cancelTextIOS="Cancelar"
+            confirmTextIOS="Confirm"
+        />
+      </View>
+
+      <View>
+        <Button title="Seleccionar Hora" onPress={showTimePicker} />
+          <DateTimePickerModal
+            isVisible={isTimePickerVisible}
+            mode="time"
+            onConfirm={confirmarHora}
+            onCancel={hideTimePicker}
+            locale='es_Es' // para español
+            headerTextIOS="Seleciona una hora"
+            cancelTextIOS="Cancelar"
+            confirmTextIOS="Confirm"
         />
       </View>
       <View>
