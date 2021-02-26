@@ -1,4 +1,4 @@
-import React, { useState} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Text, StyleSheet, View, FlatList, TouchableHighlight,  TouchableWithoutFeedback, Keyboard, Platform } from 'react-native';
 import Cita from './componentes/Cita';
 import Formulario from './componentes/Formulario';
@@ -13,10 +13,25 @@ const App = () => {
   //   { id: '3', paciente: 'Native', propietario: 'Josue', sintomas: 'No Conta'},
   // ]);
 
+  useEffect(() => {
+    const obtenerCitasStorage = async () => {
+      try {
+        const citasStorage = await AsyncStorage.getItem('citas');
+        if (citasStorage) {
+          setCitas(JSON.parse(citasStorage)); // json parse de string a un arreglo
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    obtenerCitasStorage();
+  }, []);
+
   const eliminarPaciente = id => {
-    setCitas((citasActuales) => {
-      return citasActuales.filter(cita => cita.id !== id)
-    })
+    const citrasFiltradas = citas.filter(cita => cita.id !== id);
+    
+    setCitas(citrasFiltradas);
+    guardarCitasStorage(JSON.stringify(citrasFiltradas));
   }
 
   const mostrarFormulario = () => {
@@ -27,6 +42,7 @@ const App = () => {
     Keyboard.dismiss();
   }
 
+  // guardar citas  storage
   const guardarCitasStorage = async (citasJSON) => {
     try {
       await AsyncStorage.setItem('citas', citasJSON);
